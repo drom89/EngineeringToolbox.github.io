@@ -1,3 +1,4 @@
+<!-- converter.html -->
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -9,18 +10,51 @@
   <nav><a href="index.html">← Zpět</a></nav>
   <h1>Konvertor jednotek</h1>
   <form id="convForm">
-    <label>Typ převodu:
-      <select id="convType">
-        <option value="bar2psi">bar → psi</option>
-        <option value="psi2bar">psi → bar</option>
-        <option value="m3h2lmin">m³/h → L/min</option>
-        <option value="lmin2m3h">L/min → m³/h</option>
+    <label>Z jednotky:
+      <select id="fromUnit">
+        <option value="bar">bar</option>
+        <option value="psi">psi</option>
+        <option value="Nlmin">Qn (Nl/min)</option>
+        <option value="m3h">m³/h</option>
+        <option value="kv">kv (l/min)</option>
+        <option value="Kv">Kv (m³/h)</option>
+        <option value="Cv">Cv (US gal/min)</option>
+        <option value="C">C (l/(s·bar))</option>
       </select>
     </label>
-    <label>Hodnota:<input type="number" id="value" required /></label>
+
+    <label>Do jednotky:
+      <select id="toUnit">
+        <option value="bar">bar</option>
+        <option value="psi">psi</option>
+        <option value="Nlmin">Qn (Nl/min)</option>
+        <option value="m3h">m³/h</option>
+        <option value="kv">kv (l/min)</option>
+        <option value="Kv">Kv (m³/h)</option>
+        <option value="Cv">Cv (US gal/min)</option>
+        <option value="C">C (l/(s·bar))</option>
+      </select>
+    </label>
+
+    <label>Hodnota:
+      <input type="number" id="value" required />
+    </label>
+
     <button type="submit">Převést</button>
   </form>
+
   <div class="result" id="convResult"></div>
+
+  <h2>Popis jednotek</h2>
+  <ul>
+    <li><strong>Qn</strong> – Normal flow (Nl/min). Měřeno při vstupním tlaku 6 bar a poklesu 1 bar.</li>
+    <li><strong>C</strong> – Flow sonic conductance (l/(s·bar)), poměr objemového průtoku Q a vstupního absolutního tlaku p1abs při kritickém toku.</li>
+    <li><strong>b</strong> – Kritický tlakový poměr: p2abs/p1abs označující přechod z sonického na podsouvislý tok.</li>
+    <li><strong>kv</strong> – Kv-value: l/min vody při tlakové ztrátě 1 bar.</li>
+    <li><strong>Kv</strong> – Kv-value: m³/h vody při tlakové ztrátě 1 bar.</li>
+    <li><strong>Cv</strong> – Cv-value: US gal/min vody při tlakové ztrátě 1 psi (0,07 bar).</li>
+  </ul>
+
   <script src="js/converter.js"></script>
 </body>
 </html>
