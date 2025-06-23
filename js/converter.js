@@ -15,45 +15,48 @@ form.addEventListener('submit', e => {
     return;
   }
 
-  // Převod tlaku bar ↔ psi
-  if ((from === 'bar' || from === 'psi') && (to === 'bar' || to === 'psi')) {
-    let out;
-    if (from === 'bar' && to === 'psi') out = val * 14.5038;
-    else if (from === 'psi' && to === 'bar') out = val / 14.5038;
+  // Přímý převod bar ↔ psi
+  if ((from==='bar'||from==='psi') && (to==='bar'||to==='psi')) {
+    const out = from==='bar' ? val * 14.5038 : val / 14.5038;
     resultDiv.textContent = `${out.toFixed(4)} ${to}`;
     return;
   }
 
-  // Pomocné funkce pro převod přes Qn (Nl/min)
+  // Funkce pro převod na Qn (Nl/min)
   function toQn(unit, value) {
-    switch (unit) {
+    switch(unit) {
       case 'Nlmin': return value;
       case 'm3h':   return value * 1000 / 60;
-      case 'kv':    return value * Math.sqrt(1);            // Δp=1 bar
-      case 'Kv':    return (value * Math.sqrt(1)) * 1000/60; // Δp=1 bar
-      case 'C':     return value * 6 * 60;                  // p1abs=6 bar -> l/s => *60 => l/min
-      case 'Cv':    return value * Math.sqrt(1/0.07) * 3.78541; // Δp=1 psi (0.07 bar)
+      case 'kv':    return value;                     // kv= l/min při Δp=1 bar → Nl/min
+      case 'Kv':    return value * 1000 / 60;         // Kv= m³/h při Δp=1 bar
+      case 'Cv':    return value * 3.78541;           // Cv= US gal/min → L/min → Nl/min
+      case 'C':     return value * 216;               // 1 C = 216 Nl/min (p₁abs=6 bar, kritický tok)
       default:      return NaN;
     }
   }
 
+  // Funkce pro převod z Qn (Nl/min)
   function fromQn(unit, qn) {
-    switch (unit) {
+    switch(unit) {
       case 'Nlmin': return qn;
       case 'm3h':   return qn * 60 / 1000;
-      case 'kv':    return qn; 
+      case 'kv':    return qn;
       case 'Kv':    return qn * 60 / 1000;
-      case 'C':     return qn / (6 * 60);
-      case 'Cv':    return qn / 3.78541 / Math.sqrt(1/0.07);
+      case 'Cv':    return qn / 3.78541;
+      case 'C':     return qn / 216;
       default:      return NaN;
     }
   }
 
-  const allUnits = ['Nlmin','m3h','kv','Kv','C','Cv'];
-  if (allUnits.includes(from) && allUnits.includes(to)) {
+  const all = ['Nlmin','m3h','kv','Kv','Cv','C'];
+  if (all.includes(from) && all.includes(to)) {
     const qn  = toQn(from, val);
-    const out = fromQn(to, qn);
-    resultDiv.textContent = `${out.toFixed(4)} ${to}`;
+    const out = fromQn(to,  qn);
+    if (isNaN(out)) {
+      resultDiv.textContent = 'Konverze nelze provést.';
+    } else {
+      resultDiv.textContent = `${out.toFixed(4)} ${to}`;
+    }
     return;
   }
 
