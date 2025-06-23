@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>Výpočet sil válců</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav><a href="index.html">← Zpět</a></nav>
+  <h1>Výpočet sil válců</h1>
+  <form id="cylinderForm">
+    <label>Průměr pístu (mm):<input type="number" id="diameter" required /></label>
+    <label>Tlak (bar):<input type="number" id="pressure" required /></label>
+    <label>Typ válce:
+      <select id="cylinderType">
+        <option value="pneumatic">Pneumatický</option>
+        <option value="hydraulic">Hydraulický</option>
+      </select>
+    </label>
+    <button type="submit">Spočítat sílu</button>
+  </form>
+  <div class="result" id="result"></div>
+  <script src="js/cylinders.js"></script>
+</body>
+</html>

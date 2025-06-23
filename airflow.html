@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>Průtok vzduchu v hadici</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav><a href="index.html">← Zpět</a></nav>
+  <h1>Průtok vzduchu v hadici</h1>
+  <form id="airForm">
+    <label>Průměr hadice (mm):<input type="number" id="diameter" required /></label>
+    <label>Délka hadice (m):<input type="number" id="length" required /></label>
+    <label>Pokles tlaku (bar):<input type="number" id="dp" required /></label>
+    <button type="submit">Spočítat průtok</button>
+  </form>
+  <div class="result" id="airResult"></div>
+  <script src="js/airflow.js"></script>
+</body>
+</html>

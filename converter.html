@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>Konvertor jednotek</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav><a href="index.html">← Zpět</a></nav>
+  <h1>Konvertor jednotek</h1>
+  <form id="convForm">
+    <label>Typ převodu:
+      <select id="convType">
+        <option value="bar2psi">bar → psi</option>
+        <option value="psi2bar">psi → bar</option>
+        <option value="m3h2lmin">m³/h → L/min</option>
+        <option value="lmin2m3h">L/min → m³/h</option>
+      </select>
+    </label>
+    <label>Hodnota:<input type="number" id="value" required /></label>
+    <button type="submit">Převést</button>
+  </form>
+  <div class="result" id="convResult"></div>
+  <script src="js/converter.js"></script>
+</body>
+</html>

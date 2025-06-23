@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>Výpočet tlakové ztráty</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav><a href="index.html">← Zpět</a></nav>
+  <h1>Výpočet tlakové ztráty vzduchu</h1>
+  <form id="lossForm">
+    <label>Průtok (m³/h):<input type="number" id="flow" required /></label>
+    <label>Průměr hadice (mm):<input type="number" id="diameter" required /></label>
+    <label>Délka hadice (m):<input type="number" id="length" required /></label>
+    <button type="submit">Spočítat ztrátu</button>
+  </form>
+  <div class="result" id="lossResult"></div>
+  <script src="js/pressure_loss.js"></script>
+</body>
+</html>
