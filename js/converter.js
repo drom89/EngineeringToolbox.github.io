@@ -2,63 +2,50 @@
 const form      = document.getElementById('convForm');
 const fromUnit  = document.getElementById('fromUnit');
 const toUnit    = document.getElementById('toUnit');
-const valueInput= document.getElementById('value');
+const valueEl   = document.getElementById('value');
 const resultDiv = document.getElementById('convResult');
+
+// Přepočet na Qn (Nl/min)
+const toQnFactor = {
+  Nlmin: 1,             // Qn → Qn
+  m3h:   1000/60,        // m³/h → L/min → Qn
+  kv:    68.65,          // 1 L/min vody @Δp = 1 bar → Qn
+  Kv:    (1000/60)*68.65,// 1 m³/h vody @Δp = 1 bar → Qn
+  Cv:    981.5,          // 1 US gal/min @Δp = 1 psi → Qn
+  f:     1184.6,         // 1 imp. gal/min @Δp = 1 psi → Qn
+  C:     216,            // C = l/(s·bar) při p₁=6 bar → Qn
+  S:     54.53           // mm² → Qn (empirický faktor)
+};
 
 form.addEventListener('submit', e => {
   e.preventDefault();
   const from = fromUnit.value;
   const to   = toUnit.value;
-  const val  = parseFloat(valueInput.value);
+  const val  = parseFloat(valueEl.value);
   if (isNaN(val)) {
-    resultDiv.textContent = 'Neplatná hodnota.';
+    resultDiv.textContent = 'Zadejte platnou hodnotu.';
     return;
   }
 
   // Přímý převod bar ↔ psi
-  if ((from==='bar'||from==='psi') && (to==='bar'||to==='psi')) {
-    const out = from==='bar' ? val * 14.5038 : val / 14.5038;
+  if ((from === 'bar' || from === 'psi') && (to === 'bar' || to === 'psi')) {
+    const out = from === 'bar' ? val * 14.5038 : val / 14.5038;
     resultDiv.textContent = `${out.toFixed(4)} ${to}`;
     return;
   }
 
-  // Funkce pro převod na Qn (Nl/min)
-  function toQn(unit, value) {
-    switch(unit) {
-      case 'Nlmin': return value;
-      case 'm3h':   return value * 1000 / 60;
-      case 'kv':    return value;                     // kv= l/min při Δp=1 bar → Nl/min
-      case 'Kv':    return value * 1000 / 60;         // Kv= m³/h při Δp=1 bar
-      case 'Cv':    return value * 3.78541;           // Cv= US gal/min → L/min → Nl/min
-      case 'C':     return value * 216;               // 1 C = 216 Nl/min (p₁abs=6 bar, kritický tok)
-      default:      return NaN;
-    }
-  }
-
-  // Funkce pro převod z Qn (Nl/min)
-  function fromQn(unit, qn) {
-    switch(unit) {
-      case 'Nlmin': return qn;
-      case 'm3h':   return qn * 60 / 1000;
-      case 'kv':    return qn;
-      case 'Kv':    return qn * 60 / 1000;
-      case 'Cv':    return qn / 3.78541;
-      case 'C':     return qn / 216;
-      default:      return NaN;
-    }
-  }
-
-  const all = ['Nlmin','m3h','kv','Kv','Cv','C'];
-  if (all.includes(from) && all.includes(to)) {
-    const qn  = toQn(from, val);
-    const out = fromQn(to,  qn);
-    if (isNaN(out)) {
-      resultDiv.textContent = 'Konverze nelze provést.';
-    } else {
-      resultDiv.textContent = `${out.toFixed(4)} ${to}`;
-    }
+  // Převod z 'from' na Qn
+  if (!(from in toQnFactor)) {
+    resultDiv.textContent = `Nepodporovaná vstupní jednotka: ${from}`;
     return;
   }
+  const qn = val * toQnFactor[from];
 
-  resultDiv.textContent = 'Konverze není definována.';
+  // Převod z Qn na 'to'
+  if (!(to in toQnFactor)) {
+    resultDiv.textContent = `Nepodporovaná výstupní jednotka: ${to}`;
+    return;
+  }
+  const out = qn / toQnFactor[to];
+  resultDiv.textContent = `${out.toFixed(4)} ${to}`;
 });
