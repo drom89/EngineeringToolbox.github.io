@@ -1,4 +1,5 @@
-// js/airflow.js
+import { calculateAirflow } from './lib/airflow_calc.js';
+
 const form       = document.getElementById('airForm');
 const presetOd   = document.getElementById('presetOd');
 const presetId   = document.getElementById('presetId');
@@ -101,19 +102,10 @@ form.addEventListener('submit', e => {
     dp_MPa = v;
   }
 
-  // Constants & calc
-  const D     = id_mm / 1000;
-  const p1_pa = 0.6 * 1e6;
-  const dp_pa = dp_MPa * 1e6;
-  const rho0  = 1.225;
-  const rho   = rho0 * (p1_pa / 101325);
-  const f     = 0.02;
-
-  const V     = Math.sqrt(2 * dp_pa / (rho * f * (L_m / D)));
-  const A     = Math.PI * D * D / 4;
-  const Qact  = A * V;
-  const Qstd  = Qact * (p1_pa / 101325);
-  const Qnlmin= Qstd * 1000 * 60;
-
-  resultDiv.textContent = `Průtok: ${Qnlmin.toFixed(2)} Nl/min`;
+  try {
+    const Qnlmin = calculateAirflow(id_mm, L_m, dp_MPa);
+    resultDiv.textContent = `Průtok: ${Qnlmin.toFixed(2)} Nl/min`;
+  } catch (error) {
+    resultDiv.textContent = error.message;
+  }
 });
