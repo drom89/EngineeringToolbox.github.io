@@ -1,4 +1,5 @@
-// js/cylinders.js
+import { calculateCylinderForces } from './lib/cylinders_calc.js';
+
 const form        = document.getElementById('cylForm');
 const presetDp    = document.getElementById('presetDp');
 const presetDr    = document.getElementById('presetDr');
@@ -69,26 +70,16 @@ form.addEventListener('submit', e => {
     : parseFloat(presetDr.value);
 
   const pVal = parseFloat(pressure.value);
-  if ([dp, dr, pVal].some(v => isNaN(v)||v<=0)) {
-    return resultDiv.textContent = 'Zadejte správné kladné hodnoty.';
+
+  try {
+    const { Fp, Fr } = calculateCylinderForces(dp, dr, pVal, unitP.value);
+    const factor = unitF.value==='kN'?1e-3:1;
+
+    resultDiv.innerHTML = `
+        <p>Síla tlačná: <strong>${(Fp*factor).toFixed(2)} ${unitF.value}</strong></p>
+        <p>Síla tažná: <strong>${(Fr*factor).toFixed(2)} ${unitF.value}</strong></p>
+    `;
+  } catch (error) {
+      resultDiv.textContent = error.message;
   }
-
-  // tlak na Pa
-  const pPa = unitP.value==='bar'
-    ? pVal*1e5
-    : pVal*6894.76;
-
-  // plochy v m²
-  const Ap = Math.PI*(dp/1000)**2/4;
-  const Ar = Math.PI*(dr/1000)**2/4;
-
-  // síly
-  const Fp = pPa*Ap;
-  const Fr = pPa*(Ap-Ar);
-  const factor = unitF.value==='kN'?1e-3:1;
-
-  resultDiv.innerHTML = `
-    <p>Síla tlačná: <strong>${(Fp*factor).toFixed(2)} ${unitF.value}</strong></p>
-    <p>Síla tažná: <strong>${(Fr*factor).toFixed(2)} ${unitF.value}</strong></p>
-  `;
 });

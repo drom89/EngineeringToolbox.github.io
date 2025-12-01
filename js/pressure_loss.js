@@ -1,4 +1,4 @@
-// js/pressure_loss.js
+import { calculatePressureLoss } from './lib/pressure_loss_calc.js';
 
 // Elementy formuláře
 const form        = document.getElementById('lossForm');
@@ -67,68 +67,34 @@ presetIdEl.addEventListener('change', () => {
 form.addEventListener('submit', e => {
   e.preventDefault();
 
-  // 1) Převod průtoku na objemový tok Q [m³/s]
-  let Q;
   const flow = parseFloat(flowEl.value);
-  switch (flowUnitEl.value) {
-    case 'm3h':
-      Q = flow / 3600;
-      break;
-    case 'lmin':
-      Q = flow / 1000 / 60;
-      break;
-    default: // 'Nlmin'
-      const p1PaNorm = p1UnitEl.value === 'MPa' ? p1El.value * 1e6
-                     : p1UnitEl.value === 'psi' ? p1El.value * 6894.76
-                     : p1El.value * 1e5;
-      Q = (flow / 1000 / 60) * (1e5 / p1PaNorm);
-  }
 
-  // 2) Určení vnitřního průměru hadice D [m]
+  // Určení vnitřního průměru hadice D [m]
   let id_mm;
   if (presetOdEl.value === 'customOd')          id_mm = parseFloat(odCustomEl.value);
   else if (presetIdEl.value === 'customId')     id_mm = parseFloat(idCustomEl.value);
   else                                           id_mm = parseFloat(presetIdEl.value);
-  const D = id_mm / 1000;
 
-  // 3) Délka potrubí L [m]
   const L = parseFloat(lengthEl.value);
+  const p1Val = parseFloat(p1El.value);
+  const p2Val = parseFloat(p2El.value);
 
-  // 4) Vstupní a výstupní tlak v Pa
-  const p1Pa = p1UnitEl.value === 'MPa' ? p1El.value * 1e6
-             : p1UnitEl.value === 'psi' ? p1El.value * 6894.76
-             : p1El.value * 1e5;
-  const p2Pa = p2UnitEl.value === 'MPa' ? p2El.value * 1e6
-             : p2UnitEl.value === 'psi' ? p2El.value * 6894.76
-             : p2El.value * 1e5;
+  try {
+      const { loss_Pa, nominal_Pa, Re, f } = calculatePressureLoss(
+          flow, flowUnitEl.value, id_mm, L, p1Val, p1UnitEl.value, p2Val, p2UnitEl.value, fMethodEl.value
+      );
 
-  // 5) Výpočet rychlosti V a hustoty ρ
-  const A   = Math.PI * D * D / 4;
-  const V   = Q / A;
-  const rho = 1.225 * (p1Pa / 101325);
+      resultEl.innerHTML = `
+        <h2>Výsledky výpočtu</h2>
+        <p><span class="label">Tlaková ztráta:</span> ${(loss_Pa / 1e5).toFixed(4)} bar</p>
+        <p><span class="label">Tlaková ztráta (Pa, psi):</span>
+          ${loss_Pa.toFixed(2)} Pa | ${(loss_Pa / 6894.76).toFixed(2)} psi</p>
+        <p><span class="label">Tlakový spád (teoreticky):</span> ${(nominal_Pa / 1e5).toFixed(4)} bar (${nominal_Pa.toFixed(0)} Pa)</p>
+        <p><span class="label">Reynoldsovo číslo Re:</span> ${Re.toFixed(0)}</p>
+        <p><span class="label">Součinitel tření f:</span> ${f.toFixed(4)}</p>
+      `;
 
-  // 6) Reynoldsovo číslo Re
-  const nu = 1.5e-5;
-  const Re = V * D / nu;
-
-  // 7) Součinitel tření f
-  let f = 0.02;
-  if (fMethodEl.value === 'blasius') {
-    f = 0.079 / Math.pow(Re, 0.25);
+  } catch (error) {
+      resultEl.textContent = "Chyba výpočtu: " + error.message;
   }
-
-  // 8) Výpočet tlakové ztráty dle Darcy–Weisbach
-  const loss    = f * (L / D) * (rho * V * V / 2);
-  const nominal = p1Pa - p2Pa;
-
-  // 9) Výstup výsledků: nejprve tlaková ztráta v barech, pak ostatní
-  resultEl.innerHTML = `
-    <h2>Výsledky výpočtu</h2>
-    <p><span class="label">Tlaková ztráta:</span> ${(loss / 1e5).toFixed(4)} bar</p>
-    <p><span class="label">Tlaková ztráta (Pa, psi):</span>
-      ${loss.toFixed(2)} Pa | ${(loss / 6894.76).toFixed(2)} psi</p>
-    <p><span class="label">Tlakový spád (teoreticky):</span> ${(nominal / 1e5).toFixed(4)} bar (${nominal.toFixed(0)} Pa)</p>
-    <p><span class="label">Reynoldsovo číslo Re:</span> ${Re.toFixed(0)}</p>
-    <p><span class="label">Součinitel tření f:</span> ${f.toFixed(4)}</p>
-  `;
 });
