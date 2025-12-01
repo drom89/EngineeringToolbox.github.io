@@ -5,87 +5,78 @@
   <meta charset="UTF-8" />
   <title>Průtok vzduchu v hadici</title>
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .preset-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      margin-top: 1rem;
-    }
-    .preset-group label {
-      flex: 1 1 180px;
-    }
-    .result {
-      margin-top: 1.5rem;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-  </style>
 </head>
 <body>
-  <nav><a href="index.html">← Zpět</a></nav>
-  <h1>Průtok vzduchu v hadici</h1>
+  <div class="main-container">
+    <div class="calculator-area">
+      <nav><a href="index.html">← Zpět</a></nav>
+      <h1>Průtok vzduchu v hadici</h1>
 
-  <form id="airForm">
-    <!-- OD / ID průměry -->
-    <div class="preset-group">
-      <label for="presetOd"><strong>Vnější průměr (OD)</strong>
-        <select id="presetOd" required>
-          <option value="" disabled selected>Vyberte OD</option>
-          <option value="3.2">3.2 mm</option>
-          <option value="4">4 mm</option>
-          <option value="6">6 mm</option>
-          <option value="8">8 mm</option>
-          <option value="10">10 mm</option>
-          <option value="12">12 mm</option>
-          <option value="16">16 mm</option>
-          <option value="customOd">Vlastní…</option>
-        </select>
-      </label>
-      <label for="presetId"><strong>Vnitřní průměr (ID)</strong>
-        <select id="presetId" disabled required>
-          <option value="" disabled selected>–</option>
-        </select>
-      </label>
+      <form id="airForm">
+        <!-- OD / ID průměry -->
+        <div class="preset-group">
+          <label for="presetOd"><strong>Vnější průměr (OD)</strong>
+            <select id="presetOd" required>
+              <option value="" disabled selected>Vyberte OD</option>
+              <option value="3.2">3.2 mm</option>
+              <option value="4">4 mm</option>
+              <option value="6">6 mm</option>
+              <option value="8">8 mm</option>
+              <option value="10">10 mm</option>
+              <option value="12">12 mm</option>
+              <option value="16">16 mm</option>
+              <option value="customOd">Vlastní…</option>
+            </select>
+          </label>
+          <label for="presetId"><strong>Vnitřní průměr (ID)</strong>
+            <select id="presetId" disabled required>
+              <option value="" disabled selected>–</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- vlastní OD/ID -->
+        <div id="customOdDiv" style="display:none; margin-top:1rem;">
+          <label>Vlastní OD (mm):
+            <input type="number" id="odCustom" step="any" min="0" />
+          </label>
+        </div>
+        <div id="customIdDiv" style="display:none; margin-top:1rem;">
+          <label>Vlastní ID (mm):
+            <input type="number" id="idCustom" step="any" min="0" />
+          </label>
+        </div>
+
+        <!-- Délka a tlakový spád -->
+        <div class="preset-group">
+          <label for="length"><strong>Délka hadice (L) [m]</strong>
+            <input type="number" id="length" step="any" min="0" required />
+          </label>
+          <label for="presetDp"><strong>Tlakový spád (Δp)</strong>
+            <select id="presetDp" required>
+              <option value="0.1">0.1 MPa</option>
+              <option value="customDp">Vlastní…</option>
+            </select>
+          </label>
+        </div>
+        <div id="customDpDiv" style="display:none; margin-top:1rem;">
+          <label>Vlastní Δp (MPa):
+            <input type="number" id="dpCustom" step="any" min="0" />
+          </label>
+        </div>
+
+        <button type="submit" style="margin-top:1rem;">Spočítat průtok</button>
+      </form>
+
+      <div class="result" id="airResult"></div>
+      <p>Výpočet používá vstupní tlak <strong>0.6 MPa</strong> a zvolený Δp.</p>
     </div>
 
-    <!-- vlastní OD/ID -->
-    <div id="customOdDiv" style="display:none; margin-top:1rem;">
-      <label>Vlastní OD (mm):
-        <input type="number" id="odCustom" step="any" min="0" />
-      </label>
+    <div class="history-sidebar" id="history-container">
+      <!-- History will be rendered here -->
     </div>
-    <div id="customIdDiv" style="display:none; margin-top:1rem;">
-      <label>Vlastní ID (mm):
-        <input type="number" id="idCustom" step="any" min="0" />
-      </label>
-    </div>
+  </div>
 
-    <!-- Délka a tlakový spád -->
-    <div class="preset-group">
-      <label for="length"><strong>Délka hadice (L) [m]</strong>
-        <input type="number" id="length" step="any" min="0" required />
-      </label>
-      <label for="presetDp"><strong>Tlakový spád (Δp)</strong>
-        <select id="presetDp" required>
-          <option value="0.1">0.1 MPa</option>
-          <option value="customDp">Vlastní…</option>
-        </select>
-      </label>
-    </div>
-    <div id="customDpDiv" style="display:none; margin-top:1rem;">
-      <label>Vlastní Δp (MPa):
-        <input type="number" id="dpCustom" step="any" min="0" />
-      </label>
-    </div>
-
-    <button type="submit" style="margin-top:1rem;">Spočítat průtok</button>
-  </form>
-
-  <div class="result" id="airResult"></div>
-  <p>Výpočet používá vstupní tlak <strong>0.6 MPa</strong> a zvolený Δp.</p>
-
-  <script src="js/airflow.js"></script>
+  <script type="module" src="js/airflow.js"></script>
 </body>
 </html>

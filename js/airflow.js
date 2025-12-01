@@ -1,4 +1,6 @@
-// js/airflow.js
+import { calculateAirflow } from './lib/airflow_calc.js';
+import { HistoryManager } from './lib/history_manager.js';
+
 const form       = document.getElementById('airForm');
 const presetOd   = document.getElementById('presetOd');
 const presetId   = document.getElementById('presetId');
@@ -11,6 +13,8 @@ const presetDp   = document.getElementById('presetDp');
 const dpCustom   = document.getElementById('dpCustom');
 const customDpDiv= document.getElementById('customDpDiv');
 const resultDiv  = document.getElementById('airResult');
+
+const historyManager = new HistoryManager('airflow_history', 'history-container');
 
 // Map OD → ID options
 const mapId = {
@@ -101,19 +105,15 @@ form.addEventListener('submit', e => {
     dp_MPa = v;
   }
 
-  // Constants & calc
-  const D     = id_mm / 1000;
-  const p1_pa = 0.6 * 1e6;
-  const dp_pa = dp_MPa * 1e6;
-  const rho0  = 1.225;
-  const rho   = rho0 * (p1_pa / 101325);
-  const f     = 0.02;
+  try {
+    const Qnlmin = calculateAirflow(id_mm, L_m, dp_MPa);
+    const resultText = `Průtok: ${Qnlmin.toFixed(2)} Nl/min`;
+    resultDiv.textContent = resultText;
 
-  const V     = Math.sqrt(2 * dp_pa / (rho * f * (L_m / D)));
-  const A     = Math.PI * D * D / 4;
-  const Qact  = A * V;
-  const Qstd  = Qact * (p1_pa / 101325);
-  const Qnlmin= Qstd * 1000 * 60;
+    // Add to history
+    historyManager.addEntry(`ID: ${id_mm}mm, L: ${L_m}m, Δp: ${dp_MPa}MPa<br>-> <strong>${Qnlmin.toFixed(2)} Nl/min</strong>`);
 
-  resultDiv.textContent = `Průtok: ${Qnlmin.toFixed(2)} Nl/min`;
+  } catch (error) {
+    resultDiv.textContent = error.message;
+  }
 });
