@@ -5,134 +5,97 @@
   <meta charset="UTF-8">
   <title>Výpočet tlakové ztráty vzduchu</title>
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 700px;
-      margin: 20px auto;
-      padding: 1rem;
-    }
-    h1 { margin-bottom: 1rem; }
-    form { display: flex; flex-direction: column; gap: 1rem; }
-    .preset-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .preset-group > label {
-      flex: 1 1 220px;
-      display: flex;
-      flex-direction: column;
-    }
-    .custom-group { margin-top: 0.5rem; display: none; }
-    input, select, button {
-      font-size: 1rem;
-      padding: 0.4rem;
-      margin-top: 0.3rem;
-    }
-    button {
-      align-self: flex-start;
-      padding: 0.6rem 1.2rem;
-    }
-    .result {
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: #f9f9f9;
-      border-radius: 4px;
-    }
-    .result h2 {
-      margin-top: 0;
-      font-size: 1.2rem;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 0.3rem;
-    }
-    .result p {
-      margin: 0.5rem 0;
-    }
-    .label { font-weight: bold; }
-  </style>
 </head>
 <body>
-  <nav><a href="index.html">← Zpět</a></nav>
-  <h1>Výpočet tlakové ztráty vzduchu</h1>
-  <form id="lossForm">
-    <div class="preset-group">
-      <label>
-        <strong>Průtok</strong>
-        <input type="number" id="flow" required />
-        <select id="flowUnit">
-          <option value="m3h">m³/h</option>
-          <option value="lmin">L/min</option>
-          <option value="Nlmin" selected>Nl/min</option>
-        </select>
-      </label>
-      <label>
-        <strong>Vnější průměr hadice (OD)</strong>
-        <select id="presetOd" required>
-          <option value="" disabled selected>Vyberte OD</option>
-          <option value="3.2">3.2 mm</option>
-          <option value="4">4 mm</option>
-          <option value="6">6 mm</option>
-          <option value="8">8 mm</option>
-          <option value="10">10 mm</option>
-          <option value="12">12 mm</option>
-          <option value="16">16 mm</option>
-          <option value="customOd">Vlastní…</option>
-        </select>
-        <div id="customOdDiv" class="custom-group">
-          <input type="number" id="odCustom" placeholder="OD v mm" step="any" min="0" />
+  <div class="main-container">
+    <div class="calculator-area">
+      <nav><a href="index.html">← Zpět</a></nav>
+      <h1>Výpočet tlakové ztráty vzduchu</h1>
+      <form id="lossForm">
+        <div class="preset-group">
+          <label>
+            <strong>Průtok</strong>
+            <input type="number" id="flow" required />
+            <select id="flowUnit">
+              <option value="m3h">m³/h</option>
+              <option value="lmin">L/min</option>
+              <option value="Nlmin" selected>Nl/min</option>
+            </select>
+          </label>
+          <label>
+            <strong>Vnější průměr hadice (OD)</strong>
+            <select id="presetOd" required>
+              <option value="" disabled selected>Vyberte OD</option>
+              <option value="3.2">3.2 mm</option>
+              <option value="4">4 mm</option>
+              <option value="6">6 mm</option>
+              <option value="8">8 mm</option>
+              <option value="10">10 mm</option>
+              <option value="12">12 mm</option>
+              <option value="16">16 mm</option>
+              <option value="customOd">Vlastní…</option>
+            </select>
+            <div id="customOdDiv" style="display:none; margin-top:0.5rem;">
+              <input type="number" id="odCustom" placeholder="OD v mm" step="any" min="0" />
+            </div>
+          </label>
+          <label>
+            <strong>Vnitřní průměr hadice (ID)</strong>
+            <select id="presetId" disabled required>
+              <option value="" disabled selected>–</option>
+            </select>
+            <div id="customIdDiv" style="display:none; margin-top:0.5rem;">
+              <input type="number" id="idCustom" placeholder="ID v mm" step="any" min="0" />
+            </div>
+          </label>
         </div>
-      </label>
-      <label>
-        <strong>Vnitřní průměr hadice (ID)</strong>
-        <select id="presetId" disabled required>
-          <option value="" disabled selected>–</option>
-        </select>
-        <div id="customIdDiv" class="custom-group">
-          <input type="number" id="idCustom" placeholder="ID v mm" step="any" min="0" />
+
+        <div class="preset-group">
+          <label>
+            <strong>Délka potrubí (L) [m]</strong>
+            <input type="number" id="length" required />
+          </label>
+          <label>
+            <strong>Vstupní tlak (p₁)</strong>
+            <input type="number" id="pressureIn" value="6" required />
+            <select id="pressureUnitIn">
+              <option value="bar" selected>bar</option>
+              <option value="MPa">MPa</option>
+              <option value="psi">psi</option>
+            </select>
+          </label>
+          <label>
+            <strong>Výstupní tlak (p₂)</strong>
+            <input type="number" id="pressureOut" value="5" required />
+            <select id="pressureUnitOut">
+              <option value="bar" selected>bar</option>
+              <option value="MPa">MPa</option>
+              <option value="psi">psi</option>
+            </select>
+          </label>
         </div>
-      </label>
+
+        <div class="preset-group">
+          <label>
+            <strong>Metoda výpočtu součinitele f</strong>
+            <select id="fMethod">
+              <option value="const">Konstantní f = 0.02</option>
+              <option value="blasius">Blasius (0.079 / Re⁰․²⁵)</option>
+            </select>
+          </label>
+        </div>
+
+        <button type="submit">Spočítat tlakovou ztrátu</button>
+      </form>
+
+      <div class="result" id="lossResult"></div>
     </div>
 
-    <div class="preset-group">
-      <label>
-        <strong>Délka potrubí (L) [m]</strong>
-        <input type="number" id="length" required />
-      </label>
-      <label>
-        <strong>Vstupní tlak (p₁)</strong>
-        <input type="number" id="pressureIn" value="6" required />
-        <select id="pressureUnitIn">
-          <option value="bar" selected>bar</option>
-          <option value="MPa">MPa</option>
-          <option value="psi">psi</option>
-        </select>
-      </label>
-      <label>
-        <strong>Výstupní tlak (p₂)</strong>
-        <input type="number" id="pressureOut" value="5" required />
-        <select id="pressureUnitOut">
-          <option value="bar" selected>bar</option>
-          <option value="MPa">MPa</option>
-          <option value="psi">psi</option>
-        </select>
-      </label>
+    <div class="history-sidebar" id="history-container">
+      <!-- History will be rendered here -->
     </div>
+  </div>
 
-    <div class="preset-group">
-      <label>
-        <strong>Metoda výpočtu součinitele f</strong>
-        <select id="fMethod">
-          <option value="const">Konstantní f = 0.02</option>
-          <option value="blasius">Blasius (0.079 / Re⁰․²⁵)</option>
-        </select>
-      </label>
-    </div>
-
-    <button type="submit">Spočítat tlakovou ztrátu</button>
-  </form>
-
-  <div class="result" id="lossResult"></div>
   <script type="module" src="js/pressure_loss.js"></script>
 </body>
 </html>

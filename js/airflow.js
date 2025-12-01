@@ -1,4 +1,5 @@
 import { calculateAirflow } from './lib/airflow_calc.js';
+import { HistoryManager } from './lib/history_manager.js';
 
 const form       = document.getElementById('airForm');
 const presetOd   = document.getElementById('presetOd');
@@ -12,6 +13,8 @@ const presetDp   = document.getElementById('presetDp');
 const dpCustom   = document.getElementById('dpCustom');
 const customDpDiv= document.getElementById('customDpDiv');
 const resultDiv  = document.getElementById('airResult');
+
+const historyManager = new HistoryManager('airflow_history', 'history-container');
 
 // Map OD → ID options
 const mapId = {
@@ -104,7 +107,12 @@ form.addEventListener('submit', e => {
 
   try {
     const Qnlmin = calculateAirflow(id_mm, L_m, dp_MPa);
-    resultDiv.textContent = `Průtok: ${Qnlmin.toFixed(2)} Nl/min`;
+    const resultText = `Průtok: ${Qnlmin.toFixed(2)} Nl/min`;
+    resultDiv.textContent = resultText;
+
+    // Add to history
+    historyManager.addEntry(`ID: ${id_mm}mm, L: ${L_m}m, Δp: ${dp_MPa}MPa<br>-> <strong>${Qnlmin.toFixed(2)} Nl/min</strong>`);
+
   } catch (error) {
     resultDiv.textContent = error.message;
   }

@@ -1,4 +1,5 @@
 import { calculateCylinderForces } from './lib/cylinders_calc.js';
+import { HistoryManager } from './lib/history_manager.js';
 
 const form        = document.getElementById('cylForm');
 const presetDp    = document.getElementById('presetDp');
@@ -11,6 +12,8 @@ const pressure    = document.getElementById('pressure');
 const unitP       = document.getElementById('unitP');
 const unitF       = document.getElementById('unitF');
 const resultDiv   = document.getElementById('cylResult');
+
+const historyManager = new HistoryManager('cylinders_history', 'history-container');
 
 // map: píst → standardní pístnice
 const mapDr = {
@@ -74,11 +77,17 @@ form.addEventListener('submit', e => {
   try {
     const { Fp, Fr } = calculateCylinderForces(dp, dr, pVal, unitP.value);
     const factor = unitF.value==='kN'?1e-3:1;
+    const fpStr = (Fp*factor).toFixed(2);
+    const frStr = (Fr*factor).toFixed(2);
 
     resultDiv.innerHTML = `
-        <p>Síla tlačná: <strong>${(Fp*factor).toFixed(2)} ${unitF.value}</strong></p>
-        <p>Síla tažná: <strong>${(Fr*factor).toFixed(2)} ${unitF.value}</strong></p>
+        <p>Síla tlačná: <strong>${fpStr} ${unitF.value}</strong></p>
+        <p>Síla tažná: <strong>${frStr} ${unitF.value}</strong></p>
     `;
+
+    // Add to history
+    historyManager.addEntry(`D: ${dp}mm, d: ${dr}mm, P: ${pVal}${unitP.value}<br>-> <strong>F+: ${fpStr} ${unitF.value}, F-: ${frStr} ${unitF.value}</strong>`);
+
   } catch (error) {
       resultDiv.textContent = error.message;
   }

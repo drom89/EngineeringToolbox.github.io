@@ -1,4 +1,5 @@
 import { calculatePressureLoss } from './lib/pressure_loss_calc.js';
+import { HistoryManager } from './lib/history_manager.js';
 
 // Elementy formuláře
 const form        = document.getElementById('lossForm');
@@ -17,6 +18,8 @@ const p2El        = document.getElementById('pressureOut');
 const p2UnitEl    = document.getElementById('pressureUnitOut');
 const fMethodEl   = document.getElementById('fMethod');
 const resultEl    = document.getElementById('lossResult');
+
+const historyManager = new HistoryManager('pressure_loss_history', 'history-container');
 
 // Mapování OD → možné ID
 const mapId = {
@@ -84,15 +87,19 @@ form.addEventListener('submit', e => {
           flow, flowUnitEl.value, id_mm, L, p1Val, p1UnitEl.value, p2Val, p2UnitEl.value, fMethodEl.value
       );
 
+      const lossBar = (loss_Pa / 1e5).toFixed(4);
       resultEl.innerHTML = `
         <h2>Výsledky výpočtu</h2>
-        <p><span class="label">Tlaková ztráta:</span> ${(loss_Pa / 1e5).toFixed(4)} bar</p>
+        <p><span class="label">Tlaková ztráta:</span> ${lossBar} bar</p>
         <p><span class="label">Tlaková ztráta (Pa, psi):</span>
           ${loss_Pa.toFixed(2)} Pa | ${(loss_Pa / 6894.76).toFixed(2)} psi</p>
         <p><span class="label">Tlakový spád (teoreticky):</span> ${(nominal_Pa / 1e5).toFixed(4)} bar (${nominal_Pa.toFixed(0)} Pa)</p>
         <p><span class="label">Reynoldsovo číslo Re:</span> ${Re.toFixed(0)}</p>
         <p><span class="label">Součinitel tření f:</span> ${f.toFixed(4)}</p>
       `;
+
+      // Add to history
+      historyManager.addEntry(`Q: ${flow}${flowUnitEl.value}, ID: ${id_mm}mm, L: ${L}m<br>-> <strong>Δp: ${lossBar} bar</strong>`);
 
   } catch (error) {
       resultEl.textContent = "Chyba výpočtu: " + error.message;

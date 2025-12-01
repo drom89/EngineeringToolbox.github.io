@@ -5,96 +5,89 @@
   <meta charset="UTF-8" />
   <title>Výpočet sil válců</title>
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    .preset-group {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      margin-top: 1rem;
-    }
-    .preset-group label {
-      flex: 1 1 120px;
-    }
-    #customDpDiv, #customDrDiv {
-      margin-top: 1rem;
-    }
-  </style>
 </head>
 <body>
-  <nav><a href="index.html">← Zpět</a></nav>
-  <h1>Výpočet sil dvojčinného válce</h1>
+  <div class="main-container">
+    <div class="calculator-area">
+      <nav><a href="index.html">← Zpět</a></nav>
+      <h1>Výpočet sil dvojčinného válce</h1>
 
-  <form id="cylForm">
+      <form id="cylForm">
 
-    <!-- výběr pístu a pístnice vedle sebe -->
-    <div class="preset-group">
-      <label for="presetDp"><strong>Píst (d<sub>p</sub>)</strong>
-        <select id="presetDp" required>
-          <option value="" disabled selected>Vyberte průměr</option>
-          <option value="8">8 mm</option>
-          <option value="10">10 mm</option>
-          <option value="12">12 mm</option>
-          <option value="16">16 mm</option>
-          <option value="20">20 mm</option>
-          <option value="25">25 mm</option>
-          <option value="32">32 mm</option>
-          <option value="40">40 mm</option>
-          <option value="50">50 mm</option>
-          <option value="63">63 mm</option>
-          <option value="80">80 mm</option>
-          <option value="100">100 mm</option>
-          <option value="125">125 mm</option>
-          <option value="160">160 mm</option>
-          <option value="200">200 mm</option>
-          <option value="250">250 mm</option>
-          <option value="customDp">Vlastní…</option>
-        </select>
-      </label>
+        <!-- výběr pístu a pístnice vedle sebe -->
+        <div class="preset-group">
+          <label for="presetDp"><strong>Píst (d<sub>p</sub>)</strong>
+            <select id="presetDp" required>
+              <option value="" disabled selected>Vyberte průměr</option>
+              <option value="8">8 mm</option>
+              <option value="10">10 mm</option>
+              <option value="12">12 mm</option>
+              <option value="16">16 mm</option>
+              <option value="20">20 mm</option>
+              <option value="25">25 mm</option>
+              <option value="32">32 mm</option>
+              <option value="40">40 mm</option>
+              <option value="50">50 mm</option>
+              <option value="63">63 mm</option>
+              <option value="80">80 mm</option>
+              <option value="100">100 mm</option>
+              <option value="125">125 mm</option>
+              <option value="160">160 mm</option>
+              <option value="200">200 mm</option>
+              <option value="250">250 mm</option>
+              <option value="customDp">Vlastní…</option>
+            </select>
+          </label>
 
-      <label for="presetDr"><strong>Pístnice (d<sub>r</sub>)</strong>
-        <select id="presetDr" disabled required>
-          <option value="" disabled selected>–</option>
-        </select>
-      </label>
+          <label for="presetDr"><strong>Pístnice (d<sub>r</sub>)</strong>
+            <select id="presetDr" disabled required>
+              <option value="" disabled selected>–</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- případné vlastní zadání -->
+        <div id="customDpDiv" style="display:none; margin-top:1rem;">
+          <label>Vlastní průměr pístu (d<sub>p</sub>) (mm):
+            <input type="number" id="dpCustom" step="any" min="0" />
+          </label>
+        </div>
+        <div id="customDrDiv" style="display:none; margin-top:1rem;">
+          <label>Vlastní průměr pístnice (d<sub>r</sub>) (mm):
+            <input type="number" id="drCustom" step="any" min="0" />
+          </label>
+        </div>
+
+        <!-- výběr tlaku vedle volby jednotky -->
+        <div class="preset-group">
+          <label for="pressure"><strong>Tlak</strong>
+            <input type="number" id="pressure" step="any" required />
+          </label>
+          <label for="unitP"><strong>Jednotka tlaku</strong>
+            <select id="unitP">
+              <option value="bar">bar</option>
+              <option value="psi">psi</option>
+            </select>
+          </label>
+        </div>
+
+        <label style="margin-top:1rem;"><strong>Výsledek v:</strong>
+          <select id="unitF">
+            <option value="N">N</option>
+            <option value="kN">kN</option>
+          </select>
+        </label>
+
+        <button type="submit" style="margin-top:1rem;">Spočítat síly</button>
+      </form>
+
+      <div class="result" id="cylResult" style="margin-top:1.5rem;"></div>
     </div>
 
-    <!-- případné vlastní zadání -->
-    <div id="customDpDiv" style="display:none;">
-      <label>Vlastní průměr pístu (d<sub>p</sub>) (mm):
-        <input type="number" id="dpCustom" step="any" min="0" />
-      </label>
+    <div class="history-sidebar" id="history-container">
+      <!-- History will be rendered here -->
     </div>
-    <div id="customDrDiv" style="display:none;">
-      <label>Vlastní průměr pístnice (d<sub>r</sub>) (mm):
-        <input type="number" id="drCustom" step="any" min="0" />
-      </label>
-    </div>
-
-    <!-- výběr tlaku vedle volby jednotky -->
-    <div class="preset-group">
-      <label for="pressure"><strong>Tlak</strong>
-        <input type="number" id="pressure" step="any" required />
-      </label>
-      <label for="unitP"><strong>Jednotka tlaku</strong>
-        <select id="unitP">
-          <option value="bar">bar</option>
-          <option value="psi">psi</option>
-        </select>
-      </label>
-    </div>
-
-    <label style="margin-top:1rem;"><strong>Výsledek v:</strong>
-      <select id="unitF">
-        <option value="N">N</option>
-        <option value="kN">kN</option>
-      </select>
-    </label>
-
-    <button type="submit" style="margin-top:1rem;">Spočítat síly</button>
-  </form>
-
-  <div class="result" id="cylResult" style="margin-top:1.5rem;"></div>
+  </div>
 
   <script type="module" src="js/cylinders.js"></script>
 </body>

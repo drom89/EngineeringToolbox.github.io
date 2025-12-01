@@ -5,62 +5,60 @@
   <meta charset="UTF-8" />
   <title>Konvertor jednotek</title>
   <link rel="stylesheet" href="css/style.css" />
-  <style>
-    body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 1rem; }
-    label, select, input, button { display: block; width: 100%; margin-top: 0.5rem; }
-    button { margin-top: 1rem; padding: 0.6rem; }
-    .result { margin-top: 1rem; font-weight: bold; }
-  </style>
 </head>
 <body>
-  <h1>Konvertor jednotek</h1>
-  <form id="convForm">
-    <label>Z jednotky:
-      <select id="fromUnit" required>
-        <option value="bar">bar</option>
-        <option value="psi">psi</option>
-        <option value="Nlmin">Qn (Nl/min)</option>
-        <option value="m3h">m³/h</option>
-        <option value="kv">kv (l/min při Δp=1 bar)</option>
-        <option value="Kv">Kv (m³/h při Δp=1 bar)</option>
-        <option value="Cv">Cv (US gal/min při Δp=1 psi)</option>
-        <option value="f">f (imp. gal/min při Δp=1 psi)</option>
-        <option value="C">C (l/(s·bar) při p₁=6 bar)</option>
-        <option value="S">S (mm²)</option>
-      </select>
-    </label>
-    <label>Do jednotky:
-      <select id="toUnit" required>
-        <option value="bar">bar</option>
-        <option value="psi">psi</option>
-        <option value="Nlmin">Qn (Nl/min)</option>
-        <option value="m3h">m³/h</option>
-        <option value="kv">kv</option>
-        <option value="Kv">Kv</option>
-        <option value="Cv">Cv</option>
-        <option value="f">f</option>
-        <option value="C">C</option>
-        <option value="S">S</option>
-      </select>
-    </label>
-    <label>Hodnota:
-      <input type="number" id="value" required />
-    </label>
-    <button type="submit">Převést</button>
-  </form>
+  <div class="main-container">
+    <div class="calculator-area">
+      <nav><a href="index.html">← Zpět</a></nav>
+      <h1>Konvertor jednotek</h1>
+      <form id="convForm">
+        <label>Z jednotky:
+          <select id="fromUnit" required>
+            <option value="bar">bar</option>
+            <option value="psi">psi</option>
+            <option value="Nlmin">Qn (Nl/min)</option>
+            <option value="m3h">m³/h</option>
+            <option value="kv">kv (l/min při Δp=1 bar)</option>
+            <option value="Kv">Kv (m³/h při Δp=1 bar)</option>
+            <option value="Cv">Cv (US gal/min při Δp=1 psi)</option>
+            <option value="f">f (imp. gal/min při Δp=1 psi)</option>
+            <option value="C">C (l/(s·bar) při p₁=6 bar)</option>
+            <option value="S">S (mm²)</option>
+          </select>
+        </label>
+        <label>Do jednotky:
+          <select id="toUnit" required>
+            <option value="bar">bar</option>
+            <option value="psi">psi</option>
+            <option value="Nlmin">Qn (Nl/min)</option>
+            <option value="m3h">m³/h</option>
+            <option value="kv">kv</option>
+            <option value="Kv">Kv</option>
+            <option value="Cv">Cv</option>
+            <option value="f">f</option>
+            <option value="C">C</option>
+            <option value="S">S</option>
+          </select>
+        </label>
+        <label>Hodnota:
+          <input type="number" id="value" required />
+        </label>
+        <button type="submit">Převést</button>
+      </form>
 
-  <div class="result" id="convResult"></div>
+      <div class="result" id="convResult"></div>
 
-  <h2>Popis jednotek</h2>
-  <ul>
-    <li><strong>bar, psi</strong> – tlak</li>
-    <li><strong>Qn</strong> – normované litry/min při p₁=6 bar, Δp=1 bar</li>
-    <li><strong>m³/h</strong> – objemový průtok</li>
-    <li><strong>kv, Kv</strong> – vodní koeficienty při Δp=1 bar</li>
-    <li><strong>Cv, f</strong> – koeficienty při Δp=1 psi (US/imp. gal)</li>
-    <li><strong>C</strong> – flow sonic conductance (l/(s·bar)) při p₁=6 bar</li>
-    <li><strong>S</strong> – ekvivalentní průřez mm²</li>
-  </ul>
+      <h2>Popis jednotek</h2>
+      <ul>
+        <li><strong>bar, psi</strong> – tlak</li>
+        <li><strong>Qn</strong> – normované litry/min při p₁=6 bar, Δp=1 bar</li>
+        <li><strong>m³/h</strong> – objemový průtok</li>
+        <li><strong>kv, Kv</strong> – vodní koeficienty při Δp=1 bar</li>
+        <li><strong>Cv, f</strong> – koeficienty při Δp=1 psi (US/imp. gal)</li>
+        <li><strong>C</strong> – flow sonic conductance (l/(s·bar)) při p₁=6 bar</li>
+        <li><strong>S</strong> – ekvivalentní průřez mm²</li>
+      </ul>
+    </div>
 
   <script type="module" src="js/converter.js"></script>
 </body>
