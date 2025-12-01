@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <title>Odhad Spotřeby Vzduchu</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="main-container">
+    <div class="calculator-area">
+      <nav><a href="index.html">← Zpět</a></nav>
+      <h1>Odhad Spotřeby Vzduchu</h1>
+      <p>Výpočet předpokládané spotřeby vzduchu pro pneumatický válec (dvojčinný).</p>
+
+      <form id="airConsForm">
+        <label for="diameter"><strong>Průměr pístu (D) [mm]</strong>
+          <input type="number" id="diameter" min="0" step="any" required placeholder="např. 50">
+        </label>
+
+        <label for="stroke"><strong>Zdvih válce (L) [mm]</strong>
+          <input type="number" id="stroke" min="0" step="any" required placeholder="např. 100">
+        </label>
+
+        <label for="cycles"><strong>Počet cyklů za minutu (n)</strong>
+          <input type="number" id="cycles" min="0" step="any" required placeholder="např. 10">
+        </label>
+
+        <label for="pressure"><strong>Provozní tlak (P) [MPa]</strong>
+          <input type="number" id="pressure" min="0" step="any" required placeholder="např. 0.5">
+        </label>
+
+        <button type="submit" style="margin-top: 1rem;">Spočítat spotřebu</button>
+      </form>
+
+      <div class="result" id="result" style="margin-top: 1.5rem;"></div>
+
+      <p class="note" style="margin-top: 2rem; font-size: 0.9em; color: #666;">
+        Poznámka: Výpočet zahrnuje objem pro výsuv i zasunutí (zanedbává objem pístnice pro konzervativní odhad) a převádí jej na normální litry (Nl) při standardním atmosférickém tlaku.
+      </p>
+    </div>
+
+    <div class="history-sidebar" id="history-container">
+      <!-- History rendered here -->
+    </div>
+  </div>
+
+  <script type="module" src="js/air_consumption.js"></script>
+</body>
+</html>
