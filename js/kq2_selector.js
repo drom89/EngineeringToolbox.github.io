@@ -21,7 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initializeFilters() {
         // Shapes
-        const uniqueShapes = [...new Set(KQ2_DATA.map(item => item.Shape_Type))];
+        // Normalize shape names if needed or just take unique ones
+        const uniqueShapes = [...new Set(KQ2_DATA.map(item => item.Shape_Type))].sort();
+
+        // Define known shapes order or priority?
+        // For now, alphabet or pre-defined list.
+        // We have icons for specific keys in SHAPE_ICONS.
+        // If data has shapes not in SHAPE_ICONS, we should handle them.
 
         uniqueShapes.forEach(shape => {
             const btn = document.createElement('div');
@@ -29,7 +35,25 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.dataset.shape = shape;
 
             // Icon
-            const iconHtml = SHAPE_ICONS[shape] || '<span>?</span>';
+            // Try to match exact string, or partial?
+            // The data generator uses keys that match SHAPE_ICONS keys exactly for the main ones.
+            // Unions might have modified names?
+            // In generateData I used: model.name (e.g. "Přímé (KQ2H)")
+            // And for unions I modified it to "Přímé Spojka (KQ2H)"? No, I commented that out/kept it generic or modified.
+            // Let's check what I actually wrote.
+            // I wrote: Shape_Type: model.name.replace(...)
+            // So "Přímé (KQ2H)" becomes "Přímé Spojka (KQ2H)" for unions.
+            // SHAPE_ICONS has 'Přímé (KQ2H)'.
+            // So "Přímé Spojka (KQ2H)" won't find an icon.
+            // I should improve icon mapping to use partial match or map specific union names.
+
+            let iconHtml = SHAPE_ICONS[shape];
+            if (!iconHtml) {
+                // Fallback: try to find a key in SHAPE_ICONS that is a substring of the shape name
+                const matchingKey = Object.keys(SHAPE_ICONS).find(key => shape.includes(key.split(' ')[0])); // basic heuristic
+                if (matchingKey) iconHtml = SHAPE_ICONS[matchingKey];
+                else iconHtml = '<span>?</span>';
+            }
 
             btn.innerHTML = `
                 ${iconHtml}
@@ -54,7 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Tube ODs
-        const uniqueODs = [...new Set(KQ2_DATA.map(item => item.Tube_OD))].sort();
+        // Sort naturally (numeric aware?)
+        const uniqueODs = [...new Set(KQ2_DATA.map(item => item.Tube_OD))].sort((a, b) => {
+             return parseFloat(a) - parseFloat(b);
+        });
+
         uniqueODs.forEach(od => {
             const opt = document.createElement('option');
             opt.value = od;
@@ -111,21 +139,26 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Render Items
-        filtered.forEach(item => {
+        // Limit results for performance if huge (e.g. > 100)
+        const displayLimit = 100;
+        const itemsToDisplay = filtered.slice(0, displayLimit);
+
+        itemsToDisplay.forEach(item => {
             const card = document.createElement('div');
             card.className = 'result-card';
 
-            // Find Icon
-            const icon = SHAPE_ICONS[item.Shape_Type] || '';
+            // Find Icon (Reuse logic)
+            let icon = SHAPE_ICONS[item.Shape_Type];
+            if (!icon) {
+                 const matchingKey = Object.keys(SHAPE_ICONS).find(key => item.Shape_Type.includes(key.split(' ')[0]));
+                 if (matchingKey) icon = SHAPE_ICONS[matchingKey];
+            }
+            icon = icon || '';
 
-            // Make SVG smaller for card if needed, or just use text specs
-            // Adding a small visual indicator of shape in card
             const iconDiv = document.createElement('div');
             iconDiv.style.marginBottom = '10px';
             iconDiv.style.color = '#888';
             iconDiv.innerHTML = icon;
-            // Scale down svg in card
             if(iconDiv.querySelector('svg')) {
                 iconDiv.querySelector('svg').setAttribute('width', '24');
                 iconDiv.querySelector('svg').setAttribute('height', '24');
@@ -155,5 +188,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             resultsGrid.appendChild(card);
         });
+
+        if (filtered.length > displayLimit) {
+            const more = document.createElement('div');
+            more.style.gridColumn = '1 / -1';
+            more.style.textAlign = 'center';
+            more.style.padding = '10px';
+            more.style.color = '#666';
+            more.textContent = `... a dalších ${filtered.length - displayLimit} položek. Upřesněte filtry.`;
+            resultsGrid.appendChild(more);
+        }
     }
 });
