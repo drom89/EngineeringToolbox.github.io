@@ -1,94 +1,109 @@
-<!-- cylinders.html -->
 <!DOCTYPE html>
 <html lang="cs">
+
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Výpočet sil válců</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
   <div class="main-container">
     <div class="calculator-area">
-      <nav><a href="index.html">← Zpět</a></nav>
+      <nav><a href="index.html">← Zpět na rozcestník</a></nav>
       <h1>Výpočet sil dvojčinného válce</h1>
+      <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+        Spočítejte teoretickou sílu válce při vysouvání a zasouvání.
+      </p>
 
       <form id="cylForm">
-
-        <!-- výběr pístu a pístnice vedle sebe -->
+        <!-- Píst a Pístnice -->
         <div class="preset-group">
-          <label for="presetDp"><strong>Píst (d<sub>p</sub>)</strong>
+          <div>
+            <label for="presetDp" data-tooltip="Vnitřní průměr válce">Průměr pístu (d<sub>p</sub>) [mm]</label>
             <select id="presetDp" required>
               <option value="" disabled selected>Vyberte průměr</option>
-              <option value="8">8 mm</option>
-              <option value="10">10 mm</option>
-              <option value="12">12 mm</option>
-              <option value="16">16 mm</option>
-              <option value="20">20 mm</option>
-              <option value="25">25 mm</option>
-              <option value="32">32 mm</option>
-              <option value="40">40 mm</option>
-              <option value="50">50 mm</option>
-              <option value="63">63 mm</option>
-              <option value="80">80 mm</option>
-              <option value="100">100 mm</option>
-              <option value="125">125 mm</option>
-              <option value="160">160 mm</option>
-              <option value="200">200 mm</option>
-              <option value="250">250 mm</option>
-              <option value="customDp">Vlastní…</option>
+              <option value="8">8</option>
+              <option value="10">10</option>
+              <option value="12">12</option>
+              <option value="16">16</option>
+              <option value="20">20</option>
+              <option value="25">25</option>
+              <option value="32">32</option>
+              <option value="40">40</option>
+              <option value="50">50</option>
+              <option value="63">63</option>
+              <option value="80">80</option>
+              <option value="100">100</option>
+              <option value="125">125</option>
+              <option value="160">160</option>
+              <option value="200">200</option>
+              <option value="250">250</option>
+              <option value="customDp">Vlastní...</option>
             </select>
-          </label>
+          </div>
 
-          <label for="presetDr"><strong>Pístnice (d<sub>r</sub>)</strong>
+          <div>
+            <label for="presetDr" data-tooltip="Průměr pístní tyče">Průměr pístnice (d<sub>r</sub>) [mm]</label>
             <select id="presetDr" disabled required>
               <option value="" disabled selected>–</option>
             </select>
-          </label>
+          </div>
         </div>
 
-        <!-- případné vlastní zadání -->
-        <div id="customDpDiv" style="display:none; margin-top:1rem;">
-          <label>Vlastní průměr pístu (d<sub>p</sub>) (mm):
-            <input type="number" id="dpCustom" step="any" min="0" />
-          </label>
+        <!-- Vlastní zadání (skryté) -->
+        <div id="customDpDiv" style="display:none;">
+          <label for="dpCustom">Vlastní průměr pístu (d<sub>p</sub>) [mm]</label>
+          <input type="number" id="dpCustom" step="0.1" min="0.1" placeholder="Např. 45" />
         </div>
-        <div id="customDrDiv" style="display:none; margin-top:1rem;">
-          <label>Vlastní průměr pístnice (d<sub>r</sub>) (mm):
-            <input type="number" id="drCustom" step="any" min="0" />
-          </label>
+        <div id="customDrDiv" style="display:none;">
+          <label for="drCustom">Vlastní průměr pístnice (d<sub>r</sub>) [mm]</label>
+          <input type="number" id="drCustom" step="0.1" min="0" placeholder="Např. 20" />
         </div>
 
-        <!-- výběr tlaku vedle volby jednotky -->
-        <div class="preset-group">
-          <label for="pressure"><strong>Tlak</strong>
-            <input type="number" id="pressure" step="any" required />
-          </label>
-          <label for="unitP"><strong>Jednotka tlaku</strong>
+        <!-- Tlak a Jednotky -->
+        <div class="preset-group" style="margin-top: 1rem;">
+          <div>
+            <label for="pressure" data-tooltip="Pracovní tlak v systému">Tlak</label>
+            <input type="number" id="pressure" step="0.01" min="0" required placeholder="Zadejte tlak" />
+          </div>
+          <div>
+            <label for="unitP">Jednotka tlaku</label>
             <select id="unitP">
               <option value="bar">bar</option>
               <option value="psi">psi</option>
+              <option value="MPa">MPa</option>
             </select>
-          </label>
+          </div>
         </div>
 
-        <label style="margin-top:1rem;"><strong>Výsledek v:</strong>
+        <div style="margin-top: 1rem;">
+          <label for="unitF">Zobrazit výsledek v:</label>
           <select id="unitF">
-            <option value="N">N</option>
-            <option value="kN">kN</option>
+            <option value="N">Newtonech (N)</option>
+            <option value="kN">Kilonewtonech (kN)</option>
+            <option value="lbf">Librách síly (lbf)</option>
           </select>
-        </label>
+        </div>
 
-        <button type="submit" style="margin-top:1rem;">Spočítat síly</button>
+        <button type="submit" style="margin-top: 1.5rem;">Spočítat síly</button>
       </form>
 
-      <div class="result" id="cylResult" style="margin-top:1.5rem;"></div>
+      <div class="result" id="cylResult" style="display:none;">
+        <!-- Results will be injected here -->
+      </div>
     </div>
 
     <div class="history-sidebar" id="history-container">
-      <!-- History will be rendered here -->
+      <h3>Historie výpočtů</h3>
+      <div id="history-list">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Žádná historie.</p>
+      </div>
     </div>
   </div>
 
   <script type="module" src="js/cylinders.js"></script>
 </body>
+
 </html>

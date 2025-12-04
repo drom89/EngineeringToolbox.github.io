@@ -1,29 +1,43 @@
-<!-- pressure_loss.html -->
 <!DOCTYPE html>
 <html lang="cs">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Výpočet tlakové ztráty vzduchu</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <div class="main-container">
     <div class="calculator-area">
-      <nav><a href="index.html">← Zpět</a></nav>
+      <nav><a href="index.html">← Zpět na rozcestník</a></nav>
       <h1>Výpočet tlakové ztráty vzduchu</h1>
+      <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+        Spočítejte tlakovou ztrátu v pneumatickém rozvodu.
+      </p>
+
       <form id="lossForm">
+        <!-- Průtok -->
         <div class="preset-group">
-          <label>
-            <strong>Průtok</strong>
-            <input type="number" id="flow" required />
+          <div>
+            <label for="flow" data-tooltip="Požadovaný průtok vzduchu">Průtok</label>
+            <input type="number" id="flow" required min="0" step="any" placeholder="Zadejte průtok" />
+          </div>
+          <div>
+            <label for="flowUnit">Jednotka průtoku</label>
             <select id="flowUnit">
               <option value="m3h">m³/h</option>
               <option value="lmin">L/min</option>
               <option value="Nlmin" selected>Nl/min</option>
             </select>
-          </label>
-          <label>
-            <strong>Vnější průměr hadice (OD)</strong>
+          </div>
+        </div>
+
+        <!-- Hadice -->
+        <div class="preset-group" style="margin-top: 1rem;">
+          <div>
+            <label for="presetOd" data-tooltip="Vnější průměr hadice">Vnější průměr (OD)</label>
             <select id="presetOd" required>
               <option value="" disabled selected>Vyberte OD</option>
               <option value="3.2">3.2 mm</option>
@@ -33,69 +47,88 @@
               <option value="10">10 mm</option>
               <option value="12">12 mm</option>
               <option value="16">16 mm</option>
-              <option value="customOd">Vlastní…</option>
+              <option value="customOd">Vlastní...</option>
             </select>
-            <div id="customOdDiv" style="display:none; margin-top:0.5rem;">
-              <input type="number" id="odCustom" placeholder="OD v mm" step="any" min="0" />
-            </div>
-          </label>
-          <label>
-            <strong>Vnitřní průměr hadice (ID)</strong>
+          </div>
+          <div>
+            <label for="presetId" data-tooltip="Vnitřní průměr hadice">Vnitřní průměr (ID)</label>
             <select id="presetId" disabled required>
               <option value="" disabled selected>–</option>
             </select>
-            <div id="customIdDiv" style="display:none; margin-top:0.5rem;">
-              <input type="number" id="idCustom" placeholder="ID v mm" step="any" min="0" />
-            </div>
-          </label>
+          </div>
         </div>
 
-        <div class="preset-group">
-          <label>
-            <strong>Délka potrubí (L) [m]</strong>
-            <input type="number" id="length" required />
-          </label>
-          <label>
-            <strong>Vstupní tlak (p₁)</strong>
-            <input type="number" id="pressureIn" value="6" required />
+        <!-- Vlastní průměry (skryté) -->
+        <div id="customOdDiv" style="display:none; margin-top: 0.5rem;">
+          <label for="odCustom">Vlastní OD [mm]</label>
+          <input type="number" id="odCustom" placeholder="OD v mm" step="0.1" min="0" />
+        </div>
+        <div id="customIdDiv" style="display:none; margin-top: 0.5rem;">
+          <label for="idCustom">Vlastní ID [mm]</label>
+          <input type="number" id="idCustom" placeholder="ID v mm" step="0.1" min="0" />
+        </div>
+
+        <!-- Délka a Tlaky -->
+        <div style="margin-top: 1rem;">
+          <label for="length" data-tooltip="Celková délka hadice">Délka potrubí (L) [m]</label>
+          <input type="number" id="length" required min="0" step="0.1" placeholder="Např. 10" />
+        </div>
+
+        <div class="preset-group" style="margin-top: 1rem;">
+          <div>
+            <label for="pressureIn" data-tooltip="Tlak na začátku potrubí">Vstupní tlak (p₁)</label>
+            <input type="number" id="pressureIn" value="6" required step="0.1" />
+          </div>
+          <div>
+            <label for="pressureUnitIn">Jednotka</label>
             <select id="pressureUnitIn">
               <option value="bar" selected>bar</option>
               <option value="MPa">MPa</option>
               <option value="psi">psi</option>
             </select>
-          </label>
-          <label>
-            <strong>Výstupní tlak (p₂)</strong>
-            <input type="number" id="pressureOut" value="5" required />
+          </div>
+        </div>
+
+        <div class="preset-group" style="margin-top: 1rem;">
+          <div>
+            <label for="pressureOut" data-tooltip="Tlak na konci potrubí">Výstupní tlak (p₂)</label>
+            <input type="number" id="pressureOut" value="5" required step="0.1" />
+          </div>
+          <div>
+            <label for="pressureUnitOut">Jednotka</label>
             <select id="pressureUnitOut">
               <option value="bar" selected>bar</option>
               <option value="MPa">MPa</option>
               <option value="psi">psi</option>
             </select>
-          </label>
+          </div>
         </div>
 
-        <div class="preset-group">
-          <label>
-            <strong>Metoda výpočtu součinitele f</strong>
-            <select id="fMethod">
-              <option value="const">Konstantní f = 0.02</option>
-              <option value="blasius">Blasius (0.079 / Re⁰․²⁵)</option>
-            </select>
-          </label>
+        <div style="margin-top: 1rem;">
+          <label for="fMethod" data-tooltip="Způsob výpočtu třecího koeficientu">Metoda výpočtu součinitele f</label>
+          <select id="fMethod">
+            <option value="const">Konstantní f = 0.02</option>
+            <option value="blasius">Blasius (0.079 / Re^0.25)</option>
+          </select>
         </div>
 
-        <button type="submit">Spočítat tlakovou ztrátu</button>
+        <button type="submit" style="margin-top: 1.5rem;">Spočítat tlakovou ztrátu</button>
       </form>
 
-      <div class="result" id="lossResult"></div>
+      <div class="result" id="lossResult" style="display:none;">
+        <!-- Results will be injected here -->
+      </div>
     </div>
 
     <div class="history-sidebar" id="history-container">
-      <!-- History will be rendered here -->
+      <h3>Historie výpočtů</h3>
+      <div id="history-list">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Žádná historie.</p>
+      </div>
     </div>
   </div>
 
   <script type="module" src="js/pressure_loss.js"></script>
 </body>
+
 </html>
