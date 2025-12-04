@@ -11,13 +11,17 @@ export function calculateCylinderForces(dp_mm, dr_mm, pressure_val, unitP) {
         throw new Error('Invalid input values');
     }
     if (dr_mm >= dp_mm) {
-         throw new Error('Rod diameter must be smaller than piston diameter');
+        throw new Error('Rod diameter must be smaller than piston diameter');
     }
 
     // tlak na Pa
-    const pPa = unitP === 'bar'
-        ? pressure_val * 1e5
-        : pressure_val * 6894.76;
+    let pPa;
+    switch (unitP) {
+        case 'bar': pPa = pressure_val * 1e5; break;
+        case 'psi': pPa = pressure_val * 6894.76; break;
+        case 'MPa': pPa = pressure_val * 1e6; break;
+        default: throw new Error('Unknown pressure unit');
+    }
 
     // plochy v m²
     const Ap = Math.PI * (dp_mm / 1000) ** 2 / 4;

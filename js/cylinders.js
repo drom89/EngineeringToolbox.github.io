@@ -1,25 +1,25 @@
 import { calculateCylinderForces } from './lib/cylinders_calc.js';
 import { HistoryManager } from './lib/history_manager.js';
 
-const form        = document.getElementById('cylForm');
-const presetDp    = document.getElementById('presetDp');
-const presetDr    = document.getElementById('presetDr');
+const form = document.getElementById('cylForm');
+const presetDp = document.getElementById('presetDp');
+const presetDr = document.getElementById('presetDr');
 const customDpDiv = document.getElementById('customDpDiv');
 const customDrDiv = document.getElementById('customDrDiv');
-const dpCustom    = document.getElementById('dpCustom');
-const drCustom    = document.getElementById('drCustom');
-const pressure    = document.getElementById('pressure');
-const unitP       = document.getElementById('unitP');
-const unitF       = document.getElementById('unitF');
-const resultDiv   = document.getElementById('cylResult');
+const dpCustom = document.getElementById('dpCustom');
+const drCustom = document.getElementById('drCustom');
+const pressure = document.getElementById('pressure');
+const unitP = document.getElementById('unitP');
+const unitF = document.getElementById('unitF');
+const resultDiv = document.getElementById('cylResult');
 
 const historyManager = new HistoryManager('cylinders_history', 'history-container');
 
 // map: píst → standardní pístnice
 const mapDr = {
-  '8':'4','10':'4','12':'6','16':'6','20':'8','25':'10',
-  '32':'12','40':'16','50':'20','63':'20','80':'25',
-  '100':'30','125':'32','160':'40','200':'40','250':'50'
+  '8': '4', '10': '4', '12': '6', '16': '6', '20': '8', '25': '10',
+  '32': '12', '40': '16', '50': '20', '63': '20', '80': '25',
+  '100': '30', '125': '32', '160': '40', '200': '40', '250': '50'
 };
 
 // když se změní průměr pístu
@@ -65,10 +65,10 @@ presetDr.addEventListener('change', () => {
 form.addEventListener('submit', e => {
   e.preventDefault();
   // načti průměry
-  let dp = presetDp.value==='customDp'
+  let dp = presetDp.value === 'customDp'
     ? parseFloat(dpCustom.value)
     : parseFloat(presetDp.value);
-  let dr = (presetDp.value==='customDp' || presetDr.value==='customDr')
+  let dr = (presetDp.value === 'customDp' || presetDr.value === 'customDr')
     ? parseFloat(drCustom.value)
     : parseFloat(presetDr.value);
 
@@ -76,19 +76,28 @@ form.addEventListener('submit', e => {
 
   try {
     const { Fp, Fr } = calculateCylinderForces(dp, dr, pVal, unitP.value);
-    const factor = unitF.value==='kN'?1e-3:1;
-    const fpStr = (Fp*factor).toFixed(2);
-    const frStr = (Fr*factor).toFixed(2);
 
+    let factor = 1;
+    let unitLabel = unitF.value;
+
+    if (unitF.value === 'kN') factor = 1e-3;
+    else if (unitF.value === 'lbf') factor = 0.224809;
+
+    const fpStr = (Fp * factor).toFixed(2);
+    const frStr = (Fr * factor).toFixed(2);
+
+    resultDiv.style.display = 'block';
     resultDiv.innerHTML = `
-        <p>Síla tlačná: <strong>${fpStr} ${unitF.value}</strong></p>
-        <p>Síla tažná: <strong>${frStr} ${unitF.value}</strong></p>
+        <h3>Výsledky výpočtu</h3>
+        <p>Síla při vysouvání (tlak na píst): <strong>${fpStr} ${unitLabel}</strong></p>
+        <p>Síla při zasouvání (tlak na mezikruží): <strong>${frStr} ${unitLabel}</strong></p>
     `;
 
     // Add to history
-    historyManager.addEntry(`D: ${dp}mm, d: ${dr}mm, P: ${pVal}${unitP.value}<br>-> <strong>F+: ${fpStr} ${unitF.value}, F-: ${frStr} ${unitF.value}</strong>`);
+    historyManager.addEntry(`D: ${dp}mm, d: ${dr}mm, P: ${pVal}${unitP.value}<br>-> <strong>F+: ${fpStr} ${unitLabel}, F-: ${frStr} ${unitLabel}</strong>`);
 
   } catch (error) {
-      resultDiv.textContent = error.message;
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = `<p style="color: var(--error-color);">Chyba: ${error.message}</p>`;
   }
 });
