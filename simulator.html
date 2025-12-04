@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Pneumatický Dimenzeční Simulátor SMC</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .step-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .step-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #003366;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .result-box {
+            background-color: #e6f7ff;
+            border: 1px solid #91d5ff;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background-color: #fff1f0;
+            border: 1px solid #ffa39e;
+            color: #d9363e;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        .btn-next {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .btn-next:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Engineering Toolbox</h1>
+    <nav>
+        <a href="index.html">Domů</a>
+        <a href="airflow.html">Airflow</a>
+        <a href="pressure_loss.html">Tlaková ztráta</a>
+        <a href="cylinders.html">Válce</a>
+        <a href="air_consumption.html">Spotřeba vzduchu</a>
+        <a href="converter.html">Převodník</a>
+        <a href="simulator.html" class="active">Pneumatický Simulátor</a>
+    </nav>
+</header>
+
+<main>
+    <div class="calculator-container">
+        <!-- Main Content Left -->
+        <div class="calculator-main">
+            <h2>Pneumatický Dimenzeční Simulátor SMC</h2>
+            <p>Tento nástroj vás provede procesem návrhu pneumatického obvodu ve třech krocích.</p>
+
+            <!-- Step 1 -->
+            <div id="step1" class="step-container">
+                <div class="step-header">Krok 1: Dimenzování Válce</div>
+                <div class="form-group">
+                    <label for="force">Požadovaná síla (N):</label>
+                    <input type="number" id="force" placeholder="např. 500">
+                </div>
+                <div class="form-group">
+                    <label for="stroke">Zdvih (mm):</label>
+                    <input type="number" id="stroke" placeholder="např. 100">
+                </div>
+                <div class="form-group">
+                    <label for="speed">Požadovaná rychlost (mm/s):</label>
+                    <input type="number" id="speed" placeholder="např. 200">
+                </div>
+                <div class="form-group">
+                    <label for="pressure">Provozní tlak (bar):</label>
+                    <input type="number" id="pressure" value="6">
+                </div>
+
+                <button id="btn-calc-step1" class="btn-next">Vypočítat a pokračovat</button>
+
+                <div id="result-step1" class="result-box hidden">
+                    <p><strong>Minimální průměr pístu:</strong> <span id="res-min-dia"></span> mm</p>
+                    <p><strong>Vybraný standardní válec:</strong> <span id="res-sel-dia"></span> mm</p>
+                    <p><strong>Teoretická síla:</strong> <span id="res-force"></span> N</p>
+                    <p><strong>Požadovaný průtok (ANR):</strong> <span id="res-flow"></span> L/min</p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="step2" class="step-container hidden">
+                <div class="step-header">Krok 2: Dimenzování Hadice</div>
+                <p>Na základě průtoku <strong><span id="flow-ref-s2">0</span> L/min</strong> zkontrolujte tlakovou ztrátu.</p>
+
+                <div class="form-group">
+                    <label for="tubing-len">Délka hadice (m):</label>
+                    <input type="number" id="tubing-len" placeholder="např. 5">
+                </div>
+                <div class="form-group">
+                    <label for="tubing-id">Vnitřní průměr hadice (mm):</label>
+                    <select id="tubing-id">
+                        <option value="2.5">4mm (ID 2.5mm)</option>
+                        <option value="4">6mm (ID 4mm)</option>
+                        <option value="5">8mm (ID 5mm)</option>
+                        <option value="6.5">10mm (ID 6.5mm)</option>
+                        <option value="8">12mm (ID 8mm)</option>
+                    </select>
+                </div>
+
+                <button id="btn-calc-step2" class="btn-next">Zkontrolovat hadici</button>
+
+                <div id="result-step2" class="result-box hidden">
+                    <p><strong>Tlaková ztráta:</strong> <span id="res-drop-bar"></span> bar (<span id="res-drop-perc"></span>%)</p>
+                    <div id="tubing-warning" class="warning-box hidden">
+                        Pozor: Tlaková ztráta překračuje 10% vstupního tlaku! Zvolte větší průměr hadice.
+                    </div>
+                    <button id="btn-goto-step3" class="btn-next hidden">Pokračovat k výběru ventilu</button>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="step3" class="step-container hidden">
+                <div class="step-header">Krok 3: Doporučení Ventilu (SMC SY)</div>
+                <p>Výběr ventilu pro průtok <strong><span id="flow-ref-s3">0</span> L/min</strong>.</p>
+
+                <div class="form-group">
+                    <label for="valve-func">Funkce ventilu:</label>
+                    <select id="valve-func">
+                        <option value="5/2 Monostabilní">5/2 Monostabilní</option>
+                        <option value="5/2 Bistabilní">5/2 Bistabilní</option>
+                        <option value="5/3 Střední poloha uzavřená">5/3 Střední poloha uzavřená</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valve-volt">Napětí cívky:</label>
+                    <select id="valve-volt">
+                        <option value="24V DC">24V DC</option>
+                        <option value="12V DC">12V DC</option>
+                        <option value="230V AC">230V AC</option>
+                    </select>
+                </div>
+
+                <button id="btn-calc-step3" class="btn-next">Najít ventil</button>
+
+                <div id="result-step3" class="result-box hidden">
+                    <p><strong>Doporučená řada:</strong> <span id="res-valve-series"></span></p>
+                    <p><strong>Model:</strong> <span id="res-valve-model"></span></p>
+                    <p><strong>Specifikace:</strong> <span id="res-valve-spec"></span></p>
+                </div>
+                <div id="valve-error" class="warning-box hidden"></div>
+            </div>
+
+        </div>
+
+        <!-- History Sidebar -->
+        <div id="history-container">
+            <h3>Historie výpočtů</h3>
+            <ul id="history-list"></ul>
+            <button id="clear-history">Smazat historii</button>
+        </div>
+    </div>
+</main>
+
+<script type="module" src="js/simulator.js"></script>
+</body>
+</html>
