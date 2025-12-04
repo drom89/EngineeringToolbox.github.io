@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>Výběr Šroubení SMC KQ2</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/kq2.css">
+</head>
+<body>
+
+<header>
+    <h1>Engineering Toolbox</h1>
+    <nav>
+        <a href="index.html">Domů</a>
+        <a href="airflow.html">Airflow</a>
+        <a href="pressure_loss.html">Tlaková ztráta</a>
+        <a href="cylinders.html">Válce</a>
+        <a href="air_consumption.html">Spotřeba vzduchu</a>
+        <a href="converter.html">Převodník</a>
+        <a href="simulator.html">Pneumatický Simulátor</a>
+        <a href="kq2_selector.html" class="active">Výběr Šroubení KQ2</a>
+    </nav>
+</header>
+
+<main>
+    <div class="selector-container">
+        <h2>Výběr Šroubení SMC řady KQ2</h2>
+
+        <!-- Filter Panel -->
+        <div class="filter-panel">
+
+            <!-- Shape Filter -->
+            <div class="filter-section">
+                <h3>1. Vyberte Tvar</h3>
+                <div id="shape-filters" class="shape-filters">
+                    <!-- Javascript will populate buttons here -->
+                </div>
+            </div>
+
+            <!-- Other Filters -->
+            <div class="filter-section">
+                <h3>2. Specifikace</h3>
+                <div class="dropdown-filters">
+                    <div class="filter-group">
+                        <label for="filter-od">Vnější Průměr Hadice</label>
+                        <select id="filter-od">
+                            <option value="all">Všechny průměry</option>
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-thread">Typ Závitu</label>
+                        <select id="filter-thread">
+                            <option value="all">Všechny závity</option>
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+
+                    <div class="filter-group" style="justify-content: flex-end;">
+                        <button id="btn-reset" style="padding: 8px 16px; background-color: #666; color: white; border: none; border-radius: 4px; cursor: pointer;">Resetovat Filtry</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Grid -->
+        <div id="results-count" style="margin-bottom: 5px; font-weight: bold; color: #555;"></div>
+        <div id="results-grid" class="results-grid">
+            <!-- JS populated -->
+        </div>
+
+    </div>
+</main>
+
+<script type="module" src="js/kq2_selector.js"></script>
+</body>
+</html>
