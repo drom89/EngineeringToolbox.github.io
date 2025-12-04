@@ -73,22 +73,28 @@
 <body>
     <div class="main-container">
         <div class="calculator-area">
-            <nav><a href="index.html">← Zpět</a></nav>
+            <nav><a href="index.html">← Zpět na rozcestník</a></nav>
             <h1>Chemická Kompatibilita</h1>
-            <p>Vyberte materiál a chemikálii pro zobrazení kompatibility.</p>
+            <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+                Vyberte materiál a chemikálii pro zobrazení kompatibility.
+            </p>
 
             <form id="chemForm">
-                <label>Materiál:
-                    <select id="materialSelect" required>
-                        <option value="">-- Vyberte materiál --</option>
-                    </select>
-                </label>
+                <div class="preset-group">
+                    <div>
+                        <label for="materialSelect" data-tooltip="Vyberte materiál těsnění nebo hadice">Materiál</label>
+                        <select id="materialSelect" required>
+                            <option value="">-- Vyberte materiál --</option>
+                        </select>
+                    </div>
 
-                <label>Chemikálie:
-                    <select id="chemicalSelect" required>
-                        <option value="">-- Vyberte chemikálii --</option>
-                    </select>
-                </label>
+                    <div>
+                        <label for="chemicalSelect" data-tooltip="Vyberte chemickou látku">Chemikálie</label>
+                        <select id="chemicalSelect" required>
+                            <option value="">-- Vyberte chemikálii --</option>
+                        </select>
+                    </div>
+                </div>
             </form>
 
             <div id="resultDisplay" class="chem-result">
@@ -111,6 +117,10 @@
                 </div>
             </div>
 
+        </div>
+
+        <div class="history-sidebar" id="history-container" style="display:none;">
+            <!-- Placeholder if we want history later -->
         </div>
     </div>
 
