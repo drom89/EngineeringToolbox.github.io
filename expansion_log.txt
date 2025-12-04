@@ -1,0 +1,4 @@
+Expansion Log - 2 specific adjustments
+=================================================
+[Stainless Steel 316 -> Stainless Steel 904L] + Sulfuric Acid: A (Specific Rule Applied)
+[Stainless Steel 316 -> Stainless Steel 904L] + Phosphoric Acid: A (Specific Rule Applied)

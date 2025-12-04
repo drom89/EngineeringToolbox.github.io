@@ -1,0 +1,13 @@
+Verification Log - 11 changes made
+=================================================
+[Aluminum Bronze + Sodium Hydroxide] Changed C -> D (Aluminum attacked by strong bases)
+[Aluminum Bronze + Potassium Hydroxide] Changed A -> D (Aluminum attacked by strong bases)
+[Aluminum Bronze + Ammonium Hydroxide] Changed A -> D (Aluminum attacked by strong bases)
+[Aluminum Bronze + Magnesium Hydroxide] Changed C -> D (Aluminum attacked by strong bases)
+[Aluminum Bronze + Lithium Hydroxide] Changed C -> D (Aluminum attacked by strong bases)
+[Silicone (Fluorosilicone) + Gasoline] Changed A -> D (EPDM/Butyl/Silicone swell in oils/fuels)
+[Silicone (Fluorosilicone) + Hydraulic Oil] Changed A -> D (EPDM/Butyl/Silicone swell in oils/fuels)
+[Silicone (Fluorosilicone) + Motor Oil] Changed A -> D (EPDM/Butyl/Silicone swell in oils/fuels)
+[Silicone (Fluorosilicone) + Vegetable Oil] Changed A -> D (EPDM/Butyl/Silicone swell in oils/fuels)
+[Silicone (Fluorosilicone) + Mineral Oil] Changed A -> D (EPDM/Butyl/Silicone swell in oils/fuels)
+[Silicone (Fluorosilicone) + Transformer Oil] Changed A -> D (EPDM/Butyl/Silicone swell in oils/fuels)

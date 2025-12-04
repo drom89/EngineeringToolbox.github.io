@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Chemická Kompatibilita</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        .chem-result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .rating-A {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .rating-B {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .rating-C {
+            background-color: #ffeeba;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        /* Similar to B but maybe darker orange? Let's stick to standard bootstrap-ish colors */
+        .rating-C {
+            background-color: #fd7e14;
+            color: white;
+            border: 1px solid #fd7e14;
+        }
+
+        .rating-D {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="calculator-area">
+            <nav><a href="index.html">← Zpět</a></nav>
+            <h1>Chemická Kompatibilita</h1>
+            <p>Vyberte materiál a chemikálii pro zobrazení kompatibility.</p>
+
+            <form id="chemForm">
+                <label>Materiál:
+                    <select id="materialSelect" required>
+                        <option value="">-- Vyberte materiál --</option>
+                    </select>
+                </label>
+
+                <label>Chemikálie:
+                    <select id="chemicalSelect" required>
+                        <option value="">-- Vyberte chemikálii --</option>
+                    </select>
+                </label>
+            </form>
+
+            <div id="resultDisplay" class="chem-result">
+                <div id="ratingCode"></div>
+                <div id="ratingText" style="font-size: 1rem; font-weight: normal; margin-top: 0.5rem;"></div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-box rating-A"></div> A - Výborná
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box rating-B"></div> B - Dobrá
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box rating-C"></div> C - Omezená
+                </div>
+                <div class="legend-item">
+                    <div class="legend-box rating-D"></div> D - Nevhodná
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module" src="js/chem_logic.js"></script>
+</body>
+
+</html>
