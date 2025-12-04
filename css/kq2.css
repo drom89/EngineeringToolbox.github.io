@@ -1,0 +1,138 @@
+
+/* Layout for the selector page */
+.selector-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Filter Panel */
+.filter-panel {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+/* Visual Shape Buttons */
+.shape-filters {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.shape-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #555;
+}
+
+.shape-btn svg {
+    margin-bottom: 8px;
+}
+
+.shape-btn:hover {
+    border-color: #003366;
+    background-color: #e6f7ff;
+}
+
+.shape-btn.active {
+    border-color: #003366;
+    background-color: #003366;
+    color: white;
+}
+
+.shape-btn.active svg {
+    stroke: white;
+}
+
+.shape-label {
+    font-size: 0.8em;
+    text-align: center;
+}
+
+/* Dropdown Filters */
+.dropdown-filters {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.filter-group select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-width: 150px;
+}
+
+/* Results Grid */
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.result-card {
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 6px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.part-number {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.spec-row {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.no-results {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    grid-column: 1 / -1;
+}

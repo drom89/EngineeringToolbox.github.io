@@ -2,7 +2,9 @@
 import { calculateCylinderRequirements, calculateTubingCheck, recommendValve } from './lib/pneumatic_simulator.js';
 import { HistoryManager } from './lib/history_manager.js';
 
-const historyManager = new HistoryManager('pneumatic_simulator_history');
+// Instantiate HistoryManager with the container ID.
+// It handles rendering automatically.
+const historyManager = new HistoryManager('pneumatic_simulator_history', 'history-container');
 
 // State to hold data between steps
 let currentState = {
@@ -16,7 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStep2 = document.getElementById('btn-calc-step2');
     const btnGotoStep3 = document.getElementById('btn-goto-step3');
     const btnStep3 = document.getElementById('btn-calc-step3');
-    const btnClearHistory = document.getElementById('clear-history');
+
+    // Note: The HistoryManager class handles the 'Clear History' button creation inside the container.
+    // So we don't need to manually attach listeners to a button that might not be in our static HTML
+    // or if it is, HistoryManager might duplicate it.
+    // Checking simulator.html: there is <button id="clear-history">.
+    // HistoryManager creates its own button.
+    // We should probably remove the static button from HTML or ignore it and let HistoryManager work.
+    // Ideally, we should remove the static 'history-list' and 'clear-history' from HTML to avoid duplication/conflict,
+    // or adapt here. Since HistoryManager is "shared", let's trust it.
+    // But simulator.html has:
+    // <div id="history-container">
+    //     <h3>Historie výpočtů</h3>
+    //     <ul id="history-list"></ul>
+    //     <button id="clear-history">Smazat historii</button>
+    // </div>
+    // HistoryManager overwrites innerHTML of container!
+    // So the static content in 'history-container' will be wiped on instantiation.
+    // That's fine.
 
     // Step 1: Cylinder Calculation
     btnStep1.addEventListener('click', () => {
@@ -83,9 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.is_exceeded) {
                 warningBox.classList.remove('hidden');
-                // Optional: Disable next step if critical?
-                // The prompt says "warn user", implies soft block or just warning.
-                // We'll allow proceeding but with warning visible.
             } else {
                 warningBox.classList.add('hidden');
             }
@@ -142,35 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Chyba: " + error.message);
         }
     });
-
-    // History Handling
-    if (btnClearHistory) {
-        btnClearHistory.addEventListener('click', () => {
-            historyManager.clearHistory();
-            renderHistory();
-        });
-    }
-
-    renderHistory();
 });
 
 function addToHistory(state, valveResult) {
-    const item = {
-        timestamp: new Date().toISOString(),
-        summary: `Válec D${state.step1.selected_diameter_mm}, Q=${state.step1.flow_anr_lpm.toFixed(1)} L/min -> ${valveResult.series}`
-    };
-    historyManager.addEntry(item);
-    renderHistory();
-}
-
-function renderHistory() {
-    const list = document.getElementById('history-list');
-    if (list) {
-        list.innerHTML = '';
-        historyManager.getHistory().forEach(entry => {
-            const li = document.createElement('li');
-            li.textContent = `${new Date(entry.timestamp).toLocaleTimeString()} - ${entry.summary}`;
-            list.appendChild(li);
-        });
-    }
+    const summary = `Válec D${state.step1.selected_diameter_mm}, Q=${state.step1.flow_anr_lpm.toFixed(1)} L/min -> ${valveResult.series}`;
+    // HistoryManager.addEntry renders automatically
+    historyManager.addEntry(summary);
 }
